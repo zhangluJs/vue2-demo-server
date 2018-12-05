@@ -265,4 +265,103 @@ router.post('/setDefault', function (req, res, next) {
     });
 });
 
+// 删除地址接口
+router.post('/delAddress', function (req, res, next) {
+    let userId = req.cookies.userId;
+    let addressId = req.body.addressId;
+
+    if (!userId) {
+        res.json({
+            status: '1',
+            msg: 'address is null',
+            result: ''
+        });
+    } else {
+        User.update({
+            userId: userId
+        }, {
+            $pull: {
+                addressList: {
+                    addressId: addressId
+                }
+            }
+        }, function (err, doc) {
+            if (err) {
+                res.json({
+                    status: '1',
+                    msg: err.message,
+                    result: ''
+                });
+            } else {
+                res.json({
+                    status: '0',
+                    msg: '',
+                    result: doc
+                });
+            }
+        });
+    }
+
+});
+
+// 添加地址接口
+router.post('/setUpAddress', function (req, res, next) {
+    let userId = req.cookies.userId;
+    let addressId = req.body.form.addressId;
+    let userName = req.body.form.userName;
+    let streetName = req.body.form.streetName;
+    let postCode = req.body.form.postCode;
+    let tel = req.body.form.tel;
+
+    User.findOne({userId: userId}, function (err, doc) {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: err.message,
+                result: ''
+            });
+        } else {
+            let hasOwn = false;
+            doc.addressList.forEach(item => {
+                if (item.addressId !== addressId) {
+                    hasOwn = true;
+                }
+            });
+            if (!hasOwn) {
+                res.json({
+                    status: '1',
+                    msg: '该id已经存在',
+                    result: ''
+                });
+            }
+            else {
+                doc.addressList.push({
+                    addressId,
+                    userName,
+                    streetName,
+                    postCode,
+                    tel,
+                    isDefault: false
+                });
+                doc.save(function (err1, doc1) {
+                    if (err) {
+                        res.json({
+                            status: '1',
+                            msg: err1.message,
+                            result: ''
+                        });
+                    } else {
+                        res.json({
+                            status: '0',
+                            msg: '',
+                            result: ''
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+});
+
 module.exports = router;
