@@ -320,7 +320,8 @@ router.post('/setUpAddress', function (req, res, next) {
                 msg: err.message,
                 result: ''
             });
-        } else {
+        }
+        else {
             let hasOwn = false;
             doc.addressList.forEach(item => {
                 if (item.addressId !== addressId) {
