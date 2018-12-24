@@ -27,7 +27,8 @@ app.use(express.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views')));
 
 app.use(function (req, res, next) {
     if (req.cookies.userId) {
@@ -41,7 +42,7 @@ app.use(function (req, res, next) {
             res.json({
                 status: '10001',
                 msg: '当前未登录',
-                result: ''
+                result: '你好，我是 弓长王足各，你能看到这里，就代表着，这个项目快要上线了，敬请期待！'
             });
         }
     }
